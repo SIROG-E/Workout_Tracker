@@ -14,38 +14,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+});
+
 // require routes
 require("./routes/apiRoutes")(app);
 require("./routes/htmlRoutes.js")(app);
 
-mongoose.connect(
-    process.env.MONGODB_URI || "mongodb://localhost/workout_tracker",
-    { 
-        useNewURLParser: true, 
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false
-    }
-);
-
-const connection = mongoose.connection;
-
-connection.on("connected", () => {
-    console.log("Mongoose successfully connected.");
-  });
-  
-  connection.on("error", (err) => {
-    console.log("Mongoose connection error: ", err);
-  });
-  
-  app.get("/api/config", (req, res) => {
-    res.json({
-      success: true,
-    });
-  });
-
-
+// Listen 
 app.listen(PORT, () => {
-    console.log(`App running on port ${PORT}!`);
-  });
-
+  console.log(`App running on port ${PORT}!`);
+});
